@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import type { Song, Vote } from "../types"
+import type { Song, Vote } from "../../types"
 import { Check, GripVertical } from "lucide-react"
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd"
 

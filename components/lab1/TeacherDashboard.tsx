@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import type { Expert, VotingResult } from "../types"
+import type { Expert, VotingResult } from "../../types"
 import VotingResults from "./VotingResults"
 import AddExpertForm from "./AddExpertForm"
 import { Trash2, UserX } from "lucide-react"

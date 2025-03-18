@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Check, ChevronDown, UserCog, User } from "lucide-react"
-import type { Expert } from "../types"
+import type { Expert } from "../../types"
 
 interface ExpertSelectorProps {
   experts: Expert[]

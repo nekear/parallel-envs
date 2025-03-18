@@ -65,8 +65,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       }
 
+      // Store in localStorage for client-side access
       setSession(newSession)
       localStorage.setItem("session", JSON.stringify(newSession))
+
+      // Store in cookie for middleware validation
+      document.cookie = `session=${JSON.stringify(newSession)}; path=/`
 
       // Redirect based on role
       if (isTeacher) {
@@ -85,6 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     setSession(null)
     localStorage.removeItem("session")
+    // Remove the session cookie
+    document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
     router.push("/")
   }
 
