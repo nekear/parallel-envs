@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { LogOut, UserPlus, UserX } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { supabase } from "@/lib/supabaseClient"
+import { supabase } from "@/lib/supabase"
 
 export default function AdminPage() {
   const [experts, setExperts] = useState<Expert[]>([])
