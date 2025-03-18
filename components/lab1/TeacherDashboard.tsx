@@ -1,9 +1,9 @@
-import {Button} from "@/components/ui/button"
-import {Card} from "@/components/ui/card"
-import type {Expert, VotingResult} from "../types"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import type { Expert, VotingResult } from "../types"
 import VotingResults from "./VotingResults"
 import AddExpertForm from "./AddExpertForm"
-import {Trash2, UserX} from "lucide-react"
+import { Trash2, UserX } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import {useState} from "react"
+import { useState } from "react"
 
 interface TeacherDashboardProps {
   experts: Expert[]
@@ -39,6 +39,7 @@ export default function TeacherDashboard({
     <div className="container mx-auto p-6">
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="p-6">
+          <h2 className="text-2xl font-bold mb-4">Voting Results</h2>
           <VotingResults results={votingResults} />
           <div className="mt-6 space-x-4">
             <Button onClick={onCalculateResults}>Calculate Results</Button>

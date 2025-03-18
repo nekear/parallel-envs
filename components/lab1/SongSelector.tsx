@@ -1,9 +1,10 @@
-import {Card} from "@/components/ui/card"
-import {Button} from "@/components/ui/button"
-import type {Song, Vote} from "../types"
-import {Check, GripVertical} from "lucide-react"
-import {DragDropContext, Draggable, Droppable, type DropResult} from "@hello-pangea/dnd"
-import {Badge} from "@/components/ui/badge"
+"use client"
+
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import type { Song, Vote } from "../types"
+import { Check, GripVertical } from "lucide-react"
+import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd"
 
 interface SongSelectorProps {
   songs: Song[]
@@ -118,8 +119,8 @@ export default function SongSelector({
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-medium">{song.title}</h3>
-                  <div className="text-sm text-muted-foreground">{song.artist}</div>
-                  <div className="text-xs text-muted-foreground mt-1"><Badge>{song.genre}</Badge></div>
+                  <p className="text-sm text-muted-foreground">{song.artist}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{song.genre}</p>
                 </div>
                 {isSelected && (
                   <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">

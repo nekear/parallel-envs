@@ -1,5 +1,5 @@
-import {Card} from "@/components/ui/card"
-import type {VotingResult} from "../types"
+import { Card } from "@/components/ui/card"
+import type { VotingResult } from "../types"
 
 interface VotingResultsProps {
   results: VotingResult[]
