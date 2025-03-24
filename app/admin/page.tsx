@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { getExperts, getSongs, getVotes, deleteExpert } from "@/lib/supabase"
-import type { Expert, Song, Vote, VotingResult } from "@/types"
+import type {Expert, Heuristic, Song, Vote, VotingResult} from "@/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -23,6 +23,10 @@ import {
 import { LogOut, UserPlus, UserX } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/lib/supabase"
+import HeuristicSelector from "@/components/lab1/HeuristicSelector"
+import { applyHeuristic } from "@/utils/heuristics"
+import RankDistribution from "@/components/lab1/RankDistribution"
+import HeuristicDescription from "@/components/lab1/HeuristicDescription"
 
 export default function AdminPage() {
   const [experts, setExperts] = useState<Expert[]>([])
@@ -36,6 +40,9 @@ export default function AdminPage() {
   const { session, logout } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
+
+  // Add selectedHeuristic to the state
+  const [selectedHeuristic, setSelectedHeuristic] = useState<Heuristic>("standard")
 
   useEffect(() => {
     if (!session?.user) {
@@ -71,46 +78,11 @@ export default function AdminPage() {
   }, [session, router, toast])
 
   const calculateResults = () => {
-    const results: Map<string, VotingResult> = new Map()
-
-    // Initialize results with all songs
-    songs.forEach((song) => {
-      results.set(song.id, {
-        songId: song.id,
-        title: song.title,
-        artist: song.artist,
-        totalPoints: 0,
-        voteCount: 0,
-      })
-    })
-
-    // Calculate points (3 points for rank 1, 2 for rank 2, 1 for rank 3)
-    votes.forEach((vote) => {
-      const expert = experts.find((e) => e.id === vote.expert_id)
-      if (expert && expert.role === "expert") {
-        const song = results.get(vote.song_id)
-        if (song) {
-          // Points are inverse of rank (rank 1 = 3 points, rank 2 = 2 points, rank 3 = 1 point)
-          const points = 4 - vote.rank
-          results.set(vote.song_id, {
-            ...song,
-            totalPoints: song.totalPoints + points,
-            voteCount: song.voteCount + 1,
-          })
-        }
-      }
-    })
-
-    // Convert map to array and filter out songs with no votes
-    const resultsArray = Array.from(results.values())
-      .filter((result) => result.voteCount > 0)
-      .sort((a, b) => b.totalPoints - a.totalPoints)
-
-    setVotingResults(resultsArray)
+    setVotingResults(applyHeuristic(votes, songs, selectedHeuristic))
 
     toast({
       title: "Success",
-      description: "Voting results calculated successfully!",
+      description: `Voting results calculated using ${selectedHeuristic} heuristic!`,
     })
   }
 
@@ -210,7 +182,17 @@ export default function AdminPage() {
           <TabsContent value="results" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Voting Results</CardTitle>
+                <CardTitle>
+                  Voting Results
+                  {votingResults.length > 0 && (
+                      <span className="ml-2 text-sm font-normal text-muted-foreground">
+                      using{" "}
+                        {selectedHeuristic === "standard"
+                            ? "standard ranking"
+                            : `heuristic ${selectedHeuristic.toUpperCase()}`}
+                    </span>
+                  )}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {votingResults.length > 0 ? (
@@ -221,6 +203,7 @@ export default function AdminPage() {
                         <div className="flex-1">
                           <h3 className="font-medium text-lg">{result.title}</h3>
                           <p className="text-gray-500">{result.artist}</p>
+                          <RankDistribution result={result} />
                         </div>
                         <div className="text-right">
                           <p className="text-lg font-bold">{result.totalPoints} pts</p>
@@ -232,6 +215,21 @@ export default function AdminPage() {
                 ) : (
                   <p className="text-gray-500 mb-4">No voting results calculated yet.</p>
                 )}
+
+                {/* Add the HeuristicSelector component to the UI */}
+                <div className="mb-6 border-t pt-6 mt-6">
+                  <HeuristicSelector
+                      selectedHeuristic={selectedHeuristic}
+                      onChange={(heuristic) => {
+                        setSelectedHeuristic(heuristic)
+                        // Recalculate results when heuristic changes if we already have results
+                        if (votingResults.length > 0) {
+                          setVotingResults(applyHeuristic(votes, songs, heuristic))
+                        }
+                      }}
+                  />
+                  <HeuristicDescription heuristic={selectedHeuristic} />
+                </div>
 
                 <div className="mt-6">
                   <Button onClick={calculateResults}>Calculate Results</Button>
