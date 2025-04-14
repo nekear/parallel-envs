@@ -52,3 +52,31 @@ export type Heuristic =
     | "h6" // Object with the lowest total number of mentions across all comparisons
     | "h7" // Object that never appeared in the top 3 in any comparison
 
+
+export type RankingMethod = "cookSayford" | "gv" | "kemenySnell" | "vg"
+
+export interface MedianResult {
+  rankings: number[][]
+  distance: number
+}
+
+export interface RankingMedians {
+  cookSayford: MedianResult
+  gv: MedianResult
+  kemenySnell: MedianResult
+  vg: MedianResult
+}
+
+export interface AdvancedRankingResult {
+  filteredSongs: Song[]
+  rankingMatrix: number[][]
+  referenceRanking: number[]
+  distances: number[]
+  medians: RankingMedians | null
+  songRankings: {
+    cookSayford: Song[][]
+    gv: Song[][]
+    kemenySnell: Song[][]
+    vg: Song[][]
+  }
+}
